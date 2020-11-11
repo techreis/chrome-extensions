@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "second-sample",
+  "description": "A sample Chrome Extension.",
+  "version": "0.0.1",
+  "icons": { "128": "image/icon128.png" },
+  "background": {
+    "scripts": ["content_scripts.js"]
+  },
+  "permissions": ["contextMenus", "tabs", "storage"],
+  "content_scripts":[{
+    "matches":[
+      "http://*/*",
+      "https://*/*"
+    ],
+    "js": ["content_scripts.js"]
+  }]
+}
