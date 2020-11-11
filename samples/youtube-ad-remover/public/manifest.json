@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "youtube-ad-remover",
+  "description": "Youtube Advertisement Remover.",
+  "version": "0.9.0",
+  "icons": {
+    "16": "images/icon_16.png",
+    "48": "images/icon_48.png",
+    "128": "images/icon_128.png"
+  },
+  "background": {
+    "scripts": ["content_scripts.js"]
+  },
+  "permissions": ["contextMenus", "tabs", "storage"],
+  "content_scripts":[{
+    "matches":[
+      "https://www.youtube.com/*"
+    ],
+    "js": ["content_scripts.js"]
+  }]
+}
