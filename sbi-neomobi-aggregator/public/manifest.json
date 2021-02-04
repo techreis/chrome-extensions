@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "sbi-neomobi-aggregator",
+  "description": "SBI Neo Mobile Aggregator",
+  "version": "0.0.1",
+  "icons": {
+    "16": "images/icon_16.png",
+    "48": "images/icon_48.png",
+    "128": "images/icon_128.png"
+  },
+  "background": {
+    "scripts": ["content_scripts.js"]
+  },
+  "permissions": ["contextMenus", "tabs", "storage"],
+  "content_scripts":[{
+    "matches":[
+      "https://trade.sbineomobile.co.jp/account/portfolio"
+    ],
+    "js": ["content_scripts.js"]
+  }]
+}
