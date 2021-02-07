@@ -8,12 +8,24 @@ const connection = chrome.runtime.connect({
   name: Service.neoMobiAggregator.name,
 });
 const execute = async () => {
-  window.onload = () => {
-    const isDevMode = localStorage.getItem("sbiDevMode") ? true : false;
+  window.onload = async () => {
     if (isStockListPage(location.href)) {
+      const moreBtns: HTMLElement[] = Array.from(
+        document.querySelectorAll("button.more") as NodeListOf<HTMLElement>
+      );
+      for (const moreBtn of moreBtns) {
+        moreBtn.click();
+        await sleep(1000);
+      }
       const menu: HTMLElement = document.getElementById("menu")!;
-      createToggleBtn(menu, isDevMode);
-      isDevMode && sendBasicInfo();
+      createToggleBtn(menu, isDevMode());
+      if (!isDevMode()) {
+        return;
+      }
+      // change header bg color
+      let header: HTMLElement = document.getElementsByTagName("header")[0];
+      header.style.backgroundColor = "#ffffcc";
+      createStartBtn(menu);
     } else if (isDetailPage(location.href)) {
       isDevMode && sendExtraInfo();
     }
@@ -25,16 +37,6 @@ const execute = async () => {
 };
 
 const sendBasicInfo = async () => {
-  let header: HTMLElement = document.getElementsByTagName("header")[0];
-  const moreBtns: HTMLElement[] = Array.from(
-    document.querySelectorAll("button.more") as NodeListOf<HTMLElement>
-  );
-  // click more view btn until there is no more btn display
-  moreBtns.forEach((moreBtn: HTMLElement): void => {
-    moreBtn.click();
-  });
-  // change header bg color
-  header.style.backgroundColor = "#ffffcc";
   const brands: HTMLElement[] = Array.from(
     document.querySelectorAll("section.panels") as NodeListOf<HTMLElement>
   );
@@ -186,6 +188,7 @@ const sleep = (msec: number) =>
   new Promise((resolve) => setTimeout(resolve, msec));
 
 const createToggleBtn = (menu: HTMLElement, isDevMode: boolean) => {
+  let header: HTMLElement = document.getElementsByTagName("header")[0];
   let toggleBtn = document.createElement("button");
   if (isDevMode) {
     toggleBtn.innerHTML = "DEV";
@@ -199,16 +202,40 @@ const createToggleBtn = (menu: HTMLElement, isDevMode: boolean) => {
   toggleBtn.style.border = "0";
   toggleBtn.style.borderRadius = "34px";
   toggleBtn.onclick = () => {
+    const isDevMode = localStorage.getItem("sbiDevMode") ? true : false;
     if (isDevMode) {
       localStorage.removeItem("sbiDevMode");
       toggleBtn.innerHTML = "NORMAL";
+      header.style.backgroundColor = "white";
+      toggleBtn.style.backgroundColor = "#d3d3d3";
+      const startBtn = document.getElementById("startBtn")!;
+      menu.removeChild(startBtn);
     } else {
       localStorage.setItem("sbiDevMode", "true");
+      header.style.backgroundColor = "#ffffcc";
       toggleBtn.innerHTML = "DEV";
-      location.reload();
+      createStartBtn(menu);
     }
   };
   menu.appendChild(toggleBtn);
 };
+
+const createStartBtn = (menu: HTMLElement) => {
+  let startBtn = document.createElement("button");
+  startBtn.innerHTML = "START";
+  startBtn.setAttribute("id", "startBtn");
+  startBtn.style.backgroundColor = "#000094";
+  startBtn.style.color = "white";
+  startBtn.style.marginRight = "25px";
+  startBtn.style.height = "25px";
+  startBtn.style.border = "0";
+  startBtn.style.borderRadius = "34px";
+  startBtn.onclick = () => {
+    sendBasicInfo();
+  };
+  menu.insertAdjacentElement("afterbegin", startBtn);
+};
+
+const isDevMode = () => (localStorage.getItem("sbiDevMode") ? true : false);
 
 execute();
