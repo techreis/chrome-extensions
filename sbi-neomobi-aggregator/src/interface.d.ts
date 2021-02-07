@@ -8,7 +8,7 @@ export interface BrandItem {
   valuationGainOrLoss: string; // 評価損益額
   curPrice: string; // 現在値
   ownedQuantity: string; // 保有株数
-  gainOrLossRate: string;
+  gainOrLossRate: string; // 評価損益率
   averageAcquisitionUnitPrice: string; // 平均取得単価
   updatedAt: string;
   link: string;
