@@ -10,13 +10,7 @@ const connection = chrome.runtime.connect({
 const execute = async () => {
   window.onload = async () => {
     if (isStockListPage(location.href)) {
-      const moreBtns: HTMLElement[] = Array.from(
-        document.querySelectorAll("button.more") as NodeListOf<HTMLElement>
-      );
-      for (const moreBtn of moreBtns) {
-        moreBtn.click();
-        await sleep(1000);
-      }
+      clickMoreBtnUntilNoExist();
       const menu: HTMLElement = document.getElementById("menu")!;
       createToggleBtn(menu, isDevMode());
       if (!isDevMode()) {
@@ -41,6 +35,7 @@ const sendBasicInfo = async () => {
     document.querySelectorAll("section.panels") as NodeListOf<HTMLElement>
   );
   const brandItems = getBrandItems(brands);
+  console.log(`brand item nums = ${brandItems.length}`);
   // send data to chrome ext background
   for (const item of brandItems) {
     connection.postMessage(item);
@@ -103,7 +98,6 @@ const generateBrandItem = (
   index: number,
   brandElement: HTMLElement
 ): BrandItem => {
-  console.log(brandElement);
   const ticker =
     brandElement.querySelectorAll("p.ticker")[0].textContent?.trim() ||
     "unknown";
@@ -121,22 +115,14 @@ const generateBrandItem = (
     brandElement
       .querySelectorAll(".price > .value > span")[0]
       .textContent?.trim() || "-1";
-  console.log(valuation);
-
   const curPrice =
     brandElement.querySelectorAll("td span")[0].textContent?.trim() || "-1"; // 現在値
-
-  console.log(curPrice);
-
   const ownedQuantity: string =
     brandElement.querySelectorAll("td span")[2].textContent?.trim() || "-1"; // 保有数量
-
   const gainOrLossRate: string =
     brandElement.querySelectorAll("td span")[4].textContent?.trim() || "-1"; // 評価損益率
-
   const averageAcquisitionUnitPrice: string =
     brandElement.querySelectorAll("td span")[5].textContent?.trim() || "-1"; // 評価損益率
-
   const brandItem: BrandItem = {
     type: "basic",
     index,
@@ -152,7 +138,6 @@ const generateBrandItem = (
     gainOrLossRate: gainOrLossRate,
     updatedAt: getNowYMD(),
   };
-  console.log(JSON.stringify(brandItem, null, 2));
   return brandItem;
 };
 
@@ -218,6 +203,20 @@ const createToggleBtn = (menu: HTMLElement, isDevMode: boolean) => {
     }
   };
   menu.appendChild(toggleBtn);
+};
+
+const clickMoreBtnUntilNoExist = async () => {
+  const moreBtns: HTMLElement[] = Array.from(
+    document.querySelectorAll("button.more") as NodeListOf<HTMLElement>
+  );
+  if (moreBtns.length === 0) {
+    console.log("There is no more information.");
+    return;
+  }
+  for (const moreBtn of moreBtns) {
+    moreBtn.click();
+  }
+  clickMoreBtnUntilNoExist();
 };
 
 const createStartBtn = (menu: HTMLElement) => {
