@@ -113,7 +113,7 @@ const generateBrandItem = (
   const valuationGainOrLoss = fup
     ? (fup.textContent?.trim() as string)
     : fdown
-    ? (fdown.textContent?.trim() as string)
+    ? `-${fdown.textContent?.trim() as string}`
     : "unknown";
   const valuation =
     brandElement
