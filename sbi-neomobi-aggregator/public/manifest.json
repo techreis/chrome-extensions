@@ -9,12 +9,17 @@
     "128": "images/icon_128.png"
   },
   "background": {
-    "scripts": ["content_scripts.js"]
+    "scripts": ["background.js"],
+    "persistent": false
   },
-  "permissions": ["contextMenus", "tabs", "storage"],
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "storage"
+  ],
   "content_scripts":[{
     "matches":[
-      "https://trade.sbineomobile.co.jp/account/portfolio"
+      "https://trade.sbineomobile.co.jp/*"
     ],
     "js": ["content_scripts.js"]
   }]

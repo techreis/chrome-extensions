@@ -5,6 +5,7 @@ const config: any = () => {
   return {
     entry: {
       content_scripts: path.join(__dirname, "src", "content_scripts.ts"),
+      background: path.join(__dirname, "src", "background.ts"),
     },
     output: {
       path: path.join(__dirname, "dist"),
@@ -23,7 +24,7 @@ const config: any = () => {
       extensions: [".ts", ".js"],
     },
     plugins: [
-      new CopyWebpackPlugin({patterns:[{ from: "public", to: "." }]}),
+      new CopyWebpackPlugin({ patterns: [{ from: "public", to: "." }] }),
     ],
   };
 };
